@@ -18,10 +18,14 @@ public class BunTest {
     public static final double DELTA = 0.0;
 
     @Before
-    public void createBun() {
-        Faker faker = new Faker(new Locale("ru"));
-        name = faker.name().firstName();
-        price = faker.number().randomDigit();
+    public void createRandomBun() {
+        name = new Faker(new Locale("en"))
+                .space()
+                .planet();
+
+        price = new Faker(new Locale("ru"))
+                .number()
+                .randomDigit();
 
         bun = new Bun(name, price);
     }

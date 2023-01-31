@@ -11,6 +11,7 @@ import static org.junit.Assert.assertEquals;
 public class BunTest {
 
     private Bun bun;
+
     private String name;
     private float price;
 

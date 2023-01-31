@@ -15,6 +15,8 @@ public class BunTest {
     private String name;
     private float price;
 
+    public static final double DELTA = 0.0;
+
     @Before
     public void createBun() {
         Faker faker = new Faker(new Locale("ru"));
@@ -37,6 +39,6 @@ public class BunTest {
         float expectedPrice = price;
         float actualPrice = bun.getPrice();
 
-        assertEquals(expectedPrice, actualPrice, 0.0);
+        assertEquals(expectedPrice, actualPrice, DELTA);
     }
 }

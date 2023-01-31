@@ -1,20 +1,81 @@
 package praktikum;
 
+import com.github.javafaker.Faker;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
-import static org.junit.Assert.*;
+import java.util.Locale;
 
+import static org.junit.Assert.assertEquals;
+import static praktikum.IngredientType.FILLING;
+import static praktikum.IngredientType.SAUCE;
+
+@RunWith(Parameterized.class)
 public class IngredientTest {
 
-    @Test
-    public void getPrice() {
+    private Ingredient ingredient;
+
+    private final IngredientType type;
+    private final String name;
+    private final float price;
+
+    public static final double DELTA = 0.0;
+
+    public IngredientTest(IngredientType type, String name, float price) {
+        this.type = type;
+        this.name = name;
+        this.price = price;
+    }
+
+    @Parameterized.Parameters
+    public static Object[][] getSumData() {
+        return new Object[][]{
+                {SAUCE, createRandomName(), createRandomPrice()},
+                {FILLING, createRandomName(), createRandomPrice()},
+        };
+    }
+
+    @Before
+    public void createRandomIngredient() {
+        ingredient = new Ingredient(type, name, price);
     }
 
     @Test
-    public void getName() {
+    public void getPriceReturnsValidPrice() {
+        float expectedPrice = price;
+        float actualPrice = ingredient.getPrice();
+
+        assertEquals(expectedPrice, actualPrice, DELTA);
     }
 
     @Test
-    public void getType() {
+    public void getNameReturnsValidName() {
+        String expectedName = name;
+        String actualName = ingredient.getName();
+
+        assertEquals(expectedName, actualName);
     }
+
+    @Test
+    public void getTypeReturnsValidType() {
+        IngredientType expectedType = type;
+        IngredientType actualType = ingredient.getType();
+
+        assertEquals(expectedType, actualType);
+    }
+
+    private static String createRandomName() {
+        return new Faker(new Locale("en"))
+                .space()
+                .planet();
+    }
+
+    private static float createRandomPrice() {
+        return new Faker(new Locale("en"))
+                .number()
+                .randomDigit();
+    }
+
 }

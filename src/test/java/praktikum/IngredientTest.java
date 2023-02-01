@@ -32,13 +32,13 @@ public class IngredientTest {
     @Parameterized.Parameters
     public static Object[][] getSumData() {
         return new Object[][]{
-                {SAUCE, createRandomName(), createRandomPrice()},
-                {FILLING, createRandomName(), createRandomPrice()},
+                {SAUCE, getRandomName(), getRandomPrice()},
+                {FILLING, getRandomName(), getRandomPrice()},
         };
     }
 
     @Before
-    public void createRandomIngredient() {
+    public void createIngredient() {
         ingredient = new Ingredient(type, name, price);
     }
 
@@ -66,14 +66,14 @@ public class IngredientTest {
         assertEquals(expectedType, actualType);
     }
 
-    private static String createRandomName() {
+    private static String getRandomName() {
         return new Faker(new Locale("en"))
                 .space()
                 .planet();
     }
 
-    private static float createRandomPrice() {
-        return new Faker(new Locale("en"))
+    private static float getRandomPrice() {
+        return new Faker()
                 .number()
                 .randomDigit();
     }

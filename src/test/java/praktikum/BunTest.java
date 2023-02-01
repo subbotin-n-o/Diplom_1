@@ -18,16 +18,8 @@ public class BunTest {
     public static final double DELTA = 0.0;
 
     @Before
-    public void createRandomBun() {
-        name = new Faker(new Locale("en"))
-                .space()
-                .planet();
-
-        price = new Faker(new Locale("ru"))
-                .number()
-                .randomDigit();
-
-        bun = new Bun(name, price);
+    public void createBun() {
+        bun = new Bun(getRandomName(), getRandomPrice());
     }
 
     @Test
@@ -44,5 +36,21 @@ public class BunTest {
         float actualPrice = bun.getPrice();
 
         assertEquals(expectedPrice, actualPrice, DELTA);
+    }
+
+    private String getRandomName() {
+        name = new Faker(new Locale("en"))
+                .space()
+                .planet();
+
+        return name;
+    }
+
+    private float getRandomPrice() {
+        price = new Faker()
+                .number()
+                .randomDigit();
+
+        return price;
     }
 }

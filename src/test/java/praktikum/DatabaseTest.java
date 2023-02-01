@@ -31,7 +31,7 @@ public class DatabaseTest {
         List<Bun> expectedListBuns = buns;
         List<Bun> actualListBuns = database.availableBuns();
 
-        for (int i = 0; i < buns.size(); i++) {
+        for (int i = 0; i < expectedListBuns.size(); i++) {
             assertEquals(expectedListBuns.get(i).getName(), actualListBuns.get(i).getName());
             assertEquals(expectedListBuns.get(i).getPrice(), actualListBuns.get(i).getPrice(), DELTA);
         }

@@ -6,7 +6,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.*;
@@ -18,13 +17,9 @@ import static praktikum.IngredientType.SAUCE;
 @RunWith(MockitoJUnitRunner.class)
 public class BurgerTest {
 
-//    private Database database;
     private Burger burger;
 
     public static final double DELTA = 0.0;
-
-//    private List<Bun> buns;
-//    private List<Ingredient> ingredients;
 
     @Before
     public void createBurger() {
@@ -32,10 +27,7 @@ public class BurgerTest {
     }
 
     @Mock
-    Bun bun;
-
-    @Mock
-    Ingredient ingredient;
+    Database database;
 
     @Test
     public void setBunsReturnsNewBuns() {
@@ -72,13 +64,33 @@ public class BurgerTest {
 
     @Test
     public void getPriceReturnsValidPrice() {
-        initFieldIngredient(new Ingredient(FILLING, getRandomName(), 2.0F),new Ingredient(SAUCE, getRandomName(), 2.0F));
+        initFieldIngredient(new Ingredient(FILLING, getRandomName(), 2.0F), new Ingredient(SAUCE, getRandomName(), 2.0F));
         initFieldBun(new Bun(getRandomName(), 1.0F));
 
         float expectedPrice = 6.0F;
         float actualPrice = burger.getPrice();
 
         assertEquals(expectedPrice, actualPrice, DELTA);
+    }
+
+    @Test
+    public void getReceiptReturnsValidReceipt() {
+        Mockito.when(database.availableBuns()).thenReturn(new ArrayList<>(Collections.singletonList(new Bun("black bun", 100))));
+        Mockito.when(database.availableIngredients()).thenReturn(new ArrayList<>(Collections.singletonList(new Ingredient(SAUCE, "hot sauce", 100))));
+
+        List<Bun> buns = database.availableBuns();
+        List<Ingredient> ingredients = database.availableIngredients();
+
+        burger.setBuns(buns.get(0));
+        burger.addIngredient(ingredients.get(0));
+
+        String expectedReceipt = String.format("(==== %s ====)%n", "black bun") +
+                String.format("= %s %s =%n", "sauce hot", "sauce") +
+                String.format("(==== %s ====)%n", "black bun") +
+                String.format("%nPrice: %f%n", 300.0F);
+        String actualReceipt = burger.getReceipt();
+
+        assertEquals(expectedReceipt, actualReceipt);
     }
 
     private void initFieldIngredient(Ingredient ingredient1, Ingredient ingredient2) {

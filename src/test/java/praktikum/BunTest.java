@@ -18,8 +18,11 @@ public class BunTest {
     public static final double DELTA = 0.0;
 
     @Before
-    public void createBun() {
-        bun = new Bun(getRandomName(), getRandomPrice());
+    public void setUP() {
+        name = getRandomName();
+        price = getRandomPrice();
+
+        bun = new Bun(name, price);
     }
 
     @Test
@@ -39,18 +42,14 @@ public class BunTest {
     }
 
     private String getRandomName() {
-        name = new Faker(new Locale("en"))
+        return new Faker(new Locale("en"))
                 .space()
                 .planet();
-
-        return name;
     }
 
     private float getRandomPrice() {
-        price = new Faker()
+        return (float) new Faker()
                 .number()
                 .randomDigit();
-
-        return price;
     }
 }

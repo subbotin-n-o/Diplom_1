@@ -1,12 +1,11 @@
 package praktikum;
 
-import com.github.javafaker.Faker;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Locale;
-
 import static org.junit.Assert.assertEquals;
+import static praktikum.GenerateRandomData.getRandomName;
+import static praktikum.GenerateRandomData.getRandomPrice;
 
 public class BunTest {
 
@@ -41,15 +40,4 @@ public class BunTest {
         assertEquals(expectedPrice, actualPrice, DELTA);
     }
 
-    private String getRandomName() {
-        return new Faker(new Locale("en"))
-                .space()
-                .planet();
-    }
-
-    private float getRandomPrice() {
-        return (float) new Faker()
-                .number()
-                .randomDigit();
-    }
 }

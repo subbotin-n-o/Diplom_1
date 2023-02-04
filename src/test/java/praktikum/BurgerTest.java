@@ -1,6 +1,5 @@
 package praktikum;
 
-import com.github.javafaker.Faker;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,6 +10,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.util.*;
 
 import static org.junit.Assert.*;
+import static praktikum.GenerateRandomData.getRandomName;
+import static praktikum.GenerateRandomData.getRandomPrice;
 import static praktikum.IngredientType.FILLING;
 import static praktikum.IngredientType.SAUCE;
 
@@ -27,7 +28,16 @@ public class BurgerTest {
     }
 
     @Mock
-    Database database;
+    Database databaseMock;
+
+    @Mock
+    Bun bunMock;
+
+    @Mock
+    Ingredient ingredientMockOne;
+
+    @Mock
+    Ingredient ingredientMockTwo;
 
     @Test
     public void setBunsReturnsNewBuns() {
@@ -37,14 +47,14 @@ public class BurgerTest {
     }
 
     @Test
-    public void addIngredient() {
+    public void addIngredientShouldReturnNonEmptyList() {
         initFieldIngredient();
 
-        assertNotNull(burger.ingredients.get(0));
+        assertFalse(burger.ingredients.isEmpty());
     }
 
     @Test
-    public void removeIngredient() {
+    public void removeIngredientShouldReturnEmptyList() {
         initFieldIngredient();
         removeIngredients();
 
@@ -52,9 +62,9 @@ public class BurgerTest {
     }
 
     @Test
-    public void moveIngredient() {
+    public void moveIngredientShouldReplaceElementsList() {
         initFieldIngredient();
-        List<Ingredient> expectedIngredients = getIngredient();
+        List<Ingredient> expectedIngredients = Collections.singletonList(burger.ingredients.get(0));
 
         burger.moveIngredient(1, 0);
         List<Ingredient> actualIngredients = Collections.singletonList(burger.ingredients.get(0));
@@ -75,11 +85,11 @@ public class BurgerTest {
 
     @Test
     public void getReceiptReturnsValidReceipt() {
-        Mockito.when(database.availableBuns()).thenReturn(new ArrayList<>(Collections.singletonList(new Bun("black bun", 100))));
-        Mockito.when(database.availableIngredients()).thenReturn(new ArrayList<>(Collections.singletonList(new Ingredient(SAUCE, "hot sauce", 100))));
+        Mockito.when(databaseMock.availableBuns()).thenReturn(new ArrayList<>(Collections.singletonList(new Bun("black bun", 100))));
+        Mockito.when(databaseMock.availableIngredients()).thenReturn(new ArrayList<>(Collections.singletonList(new Ingredient(SAUCE, "hot sauce", 100))));
 
-        List<Bun> buns = database.availableBuns();
-        List<Ingredient> ingredients = database.availableIngredients();
+        List<Bun> buns = databaseMock.availableBuns();
+        List<Ingredient> ingredients = databaseMock.availableIngredients();
 
         burger.setBuns(buns.get(0));
         burger.addIngredient(ingredients.get(0));
@@ -93,22 +103,30 @@ public class BurgerTest {
         assertEquals(expectedReceipt, actualReceipt);
     }
 
-    private void initFieldIngredient(Ingredient ingredient1, Ingredient ingredient2) {
-        burger.addIngredient(ingredient1);
-        burger.addIngredient(ingredient2);
+    private void initFieldIngredient(Ingredient ingredientOne, Ingredient ingredientTwo) {
+        ingredientMockOne = ingredientOne;
+        ingredientMockTwo = ingredientTwo;
+
+        burger.addIngredient(ingredientMockOne);
+        burger.addIngredient(ingredientMockTwo);
     }
 
     private void initFieldBun(Bun bun) {
+        bunMock = bun;
         burger.setBuns(bun);
     }
 
     private void initFieldIngredient() {
-        burger.addIngredient(new Ingredient(SAUCE, getRandomName(), getRandomPrice()));
-        burger.addIngredient(new Ingredient(FILLING, getRandomName(), getRandomPrice()));
+        ingredientMockOne = new Ingredient(SAUCE, getRandomName(), getRandomPrice());
+        ingredientMockTwo = new Ingredient(FILLING, getRandomName(), getRandomPrice());
+
+        burger.addIngredient(ingredientMockOne);
+        burger.addIngredient(ingredientMockTwo);
     }
 
     private void initFieldBun() {
-        burger.setBuns(new Bun(getRandomName(), getRandomPrice()));
+        bunMock = new Bun(getRandomName(), getRandomPrice());
+        burger.setBuns(bunMock);
     }
 
     private void removeIngredients() {
@@ -116,21 +134,4 @@ public class BurgerTest {
         burger.removeIngredient(0);
     }
 
-    private List<Ingredient> getIngredient() {
-        List<Ingredient> ingredients = new ArrayList<>();
-        ingredients.add(burger.ingredients.get(0));
-        return ingredients;
-    }
-
-    private String getRandomName() {
-        return new Faker(new Locale("en"))
-                .space()
-                .planet();
-    }
-
-    private float getRandomPrice() {
-        return (float) new Faker()
-                .number()
-                .randomDigit();
-    }
 }

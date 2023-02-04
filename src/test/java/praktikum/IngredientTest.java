@@ -1,14 +1,13 @@
 package praktikum;
 
-import com.github.javafaker.Faker;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import java.util.Locale;
-
 import static org.junit.Assert.assertEquals;
+import static praktikum.GenerateRandomData.getRandomName;
+import static praktikum.GenerateRandomData.getRandomPrice;
 import static praktikum.IngredientType.FILLING;
 import static praktikum.IngredientType.SAUCE;
 
@@ -64,18 +63,6 @@ public class IngredientTest {
         IngredientType actualType = ingredient.getType();
 
         assertEquals(expectedType, actualType);
-    }
-
-    private static String getRandomName() {
-        return new Faker(new Locale("en"))
-                .space()
-                .planet();
-    }
-
-    private static float getRandomPrice() {
-        return new Faker()
-                .number()
-                .randomDigit();
     }
 
 }

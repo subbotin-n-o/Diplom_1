@@ -3,6 +3,11 @@ package praktikum;
 import com.github.javafaker.Faker;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.*;
 
@@ -10,26 +15,27 @@ import static org.junit.Assert.*;
 import static praktikum.IngredientType.FILLING;
 import static praktikum.IngredientType.SAUCE;
 
+@RunWith(MockitoJUnitRunner.class)
 public class BurgerTest {
-    private Database database;
+
+//    private Database database;
     private Burger burger;
+
+    public static final double DELTA = 0.0;
 
 //    private List<Bun> buns;
 //    private List<Ingredient> ingredients;
 
     @Before
-    public void setUP() {
-//        database = new Database();
-//        burger = new Burger();
-
-//        buns = database.availableBuns();
-//        ingredients = database.availableIngredients();
-//
-//        burger.setBuns(buns.get(0));
-//
-//        burger.addIngredient(ingredients.get(1));
-//        burger.addIngredient(ingredients.get(2));
+    public void createBurger() {
+        burger = new Burger();
     }
+
+    @Mock
+    Bun bun;
+
+    @Mock
+    Ingredient ingredient;
 
     @Test
     public void setBunsReturnsNewBuns() {
@@ -56,7 +62,7 @@ public class BurgerTest {
     @Test
     public void moveIngredient() {
         initFieldIngredient();
-        List<Ingredient> expectedIngredients = getExpectedIngredients();
+        List<Ingredient> expectedIngredients = getIngredient();
 
         burger.moveIngredient(1, 0);
         List<Ingredient> actualIngredients = Collections.singletonList(burger.ingredients.get(0));
@@ -64,10 +70,33 @@ public class BurgerTest {
         assertNotEquals(expectedIngredients.get(0), actualIngredients.get(0));
     }
 
+    @Test
+    public void getPriceReturnsValidPrice() {
+        initFieldIngredient(new Ingredient(FILLING, getRandomName(), 2.0F),new Ingredient(SAUCE, getRandomName(), 2.0F));
+        initFieldBun(new Bun(getRandomName(), 1.0F));
+
+        float expectedPrice = 6.0F;
+        float actualPrice = burger.getPrice();
+
+        assertEquals(expectedPrice, actualPrice, DELTA);
+    }
+
+    private void initFieldIngredient(Ingredient ingredient1, Ingredient ingredient2) {
+        burger.addIngredient(ingredient1);
+        burger.addIngredient(ingredient2);
+    }
+
+    private void initFieldBun(Bun bun) {
+        burger.setBuns(bun);
+    }
+
     private void initFieldIngredient() {
-        burger = new Burger();
         burger.addIngredient(new Ingredient(SAUCE, getRandomName(), getRandomPrice()));
         burger.addIngredient(new Ingredient(FILLING, getRandomName(), getRandomPrice()));
+    }
+
+    private void initFieldBun() {
+        burger.setBuns(new Bun(getRandomName(), getRandomPrice()));
     }
 
     private void removeIngredients() {
@@ -75,15 +104,10 @@ public class BurgerTest {
         burger.removeIngredient(0);
     }
 
-    private List<Ingredient> getExpectedIngredients() {
-        List<Ingredient> expectedIngredients = new ArrayList<>();
-        expectedIngredients.add(burger.ingredients.get(0));
-        return expectedIngredients;
-    }
-
-    private void initFieldBun() {
-        burger = new Burger();
-        burger.setBuns(new Bun(getRandomName(), getRandomPrice()));
+    private List<Ingredient> getIngredient() {
+        List<Ingredient> ingredients = new ArrayList<>();
+        ingredients.add(burger.ingredients.get(0));
+        return ingredients;
     }
 
     private String getRandomName() {
